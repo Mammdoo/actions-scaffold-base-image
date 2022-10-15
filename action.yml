@@ -1,0 +1,10 @@
+name: "Unified:before"
+description: "Generate workflow param for every job"
+outputs:
+  ServiceName:
+    description: convert reponame to FQDN syntax
+  DemoTime:
+    description: for self study
+runs:
+  using: "node16"
+  main: "index.js"
