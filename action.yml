@@ -1,10 +1,35 @@
-name: "Unified:before"
-description: "Generate workflow param for every job"
-outputs:
-  ServiceName:
-    description: convert reponame to FQDN syntax
-  DemoTime:
-    description: for self study
+name: "Mammdoo-actions-scaffold-base-image" 
+description: "Mammdoo action scaffold for base image"
+author: SingleCorner
 runs:
-  using: "node16"
-  main: "index.js"
+  using: "composite"
+  steps:
+    - 
+      name: Code | checkout
+      uses: actions/checkout@v3
+    -
+      name: Docker | setup-qemu
+      uses: docker/setup-qemu-action@v2
+    -
+      name: Docker | setup-buildx
+      uses: docker/setup-buildx-action@v2
+    -
+      name: Docker | login | aliyun
+      uses: docker/login-action@v2
+      with:
+        registry: registry.cn-shanghai.aliyuncs.com
+        username: ${{ secrets.REGISTRY_ALI_USERNAME }}
+        password: ${{ secrets.REGISTRY_ALI_PASSWORD }}
+    -
+      name: Docker | login | main
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.REGISTRY_MAIN_USERNAME }}
+        password: ${{ secrets.REGISTRY_MAIN_PASSWORD }}
+    -
+      name: Docker | Baking
+      uses: docker/build-push-action@v3
+      with:
+        push: true
+        tags: ${{ github.repository }}:${{ github.ref_name }}
+      if: ${{ github.ref_type == tag }}
